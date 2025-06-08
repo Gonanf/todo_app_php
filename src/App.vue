@@ -16,6 +16,7 @@ fetch('login.php', {
   console.log(data.value);
 });
 
+var sel = ref([]);
 
 
 fetch('bd_get.php', {
@@ -29,23 +30,56 @@ fetch('bd_get.php', {
   for (const [i, j] of json.entries()) {
     lista.value[i] = {
       title: j.titulo,
-      value: i,
+      value: j.id,
       checked: j.terminado,
     };
+    if (j.terminado){
+      sel.value = [...sel.value, j.id];
+    }
+
   }
+  console.log("SEL",sel.value);
+
 }).finally(() => {
   console.log(lista.value);
 });
 
-const sel = ref([]);
 
-function update(element) {
-  console.log(element.value);
+function update(ref) {
+  console.log(ref);
+  //API -> Actualizar Item
+  //Si Item ya esta en el valor provisto, dejar
 
+  //ACTUALIZAR TODOS LOS ITEMS ME QUIERO MATAR
+
+  //Deseleccionados
+  for (const e of lista.value.filter(x => !ref.includes(x.value))){
+    var fm = new FormData();
+    fm.append('item',e.value);
+    fetch('deselect_item.php', {
+      method: "POST",
+      headers: {"ContentType": 'application/json'},
+      body: fm,
+    });//.then((res) => res.json()).then(() => {sel.value = [...sel.value, e.value];});
+  
+  }
+
+  //Seleccionados
+  for (const e of ref){
+    var fm = new FormData();
+    fm.append('item',e);
+    fetch('select_item.php', {
+      method: "POST",
+      headers: {"ContentType": 'application/json'},
+      body: fm,
+    });//.then((res) => res.json()).then(() => {sel.value = sel.value.filter(x => x != e)});
+  }
+  console.log(sel.value);
 }
 </script>
 
 <template>
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 
   <header>
     <h1>TODO app</h1>
@@ -73,16 +107,17 @@ function update(element) {
     <div class="lista">
       <v-card class="mx-auto">
 
-        <v-list v-if="lista" v-model:selected="sel" lines="three" select-strategy="leaf">
-          <v-list-item v-for="item in lista" :title="item.title" :key="item.checked" :value="item.value">
+        
+
+        <v-list v-model:selected="sel" @update:selected="update"  lines="three" select-strategy="leaf">
+          <v-list-item v-for="item in lista" :key="item.value" :title="item.title"
+            :value="item.value">
             <template v-slot:prepend="{ isSelected, select }">
               <v-list-item-action start>
-                <v-checkbox-btn :model-value="isSelected" @update:model-value="select"
-                  @click="update(this)"></v-checkbox-btn>
+                <v-checkbox-btn :model-value="isSelected" @update:model-value="select"></v-checkbox-btn>
               </v-list-item-action>
             </template>
           </v-list-item>
-
         </v-list>
       </v-card>
     </div>

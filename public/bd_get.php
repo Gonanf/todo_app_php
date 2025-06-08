@@ -12,6 +12,7 @@ try{
 		$result -> execute ([':cookie' => $_COOKIE['id']]);
 	while ($r = $result->fetch(\PDO::FETCH_ASSOC)){
 		$lista[] = [
+			"id" => $r['id'],
 			"titulo" => $r['titulo'],
 			"terminado" => $r['terminado'],
 		];

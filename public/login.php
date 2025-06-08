@@ -5,7 +5,7 @@ try {
 $bd = new \PDO("sqlite:base.db");
 
 $bd -> exec("CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY,nombre TEXT, contra TEXT);");
-$bd -> exec("CREATE TABLE IF NOT EXISTS items (titulo TEXT, terminado INTEGER, usuario_id INTEGER);");
+$bd -> exec("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, titulo TEXT, terminado INTEGER, usuario_id INTEGER);");
 
 if ($_SERVER['REQUEST_METHOD'] == "GET"){
 	if (isset($_COOKIE['id'])){
