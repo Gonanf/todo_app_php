@@ -76,6 +76,18 @@ function update(ref) {
   }
   console.log(sel.value);
 }
+
+function del(ref){
+  var fm = new FormData();
+  fm.append('item',ref);
+  fetch('del.php', {
+      method: "POST",
+      headers: {"ContentType": 'application/json'},
+      body: fm,
+    });
+  console.log("REEE:",ref);
+  lista.value = lista.value.filter(x => x.value != ref);
+}
 </script>
 
 <template>
@@ -115,6 +127,12 @@ function update(ref) {
             <template v-slot:prepend="{ isSelected, select }">
               <v-list-item-action start>
                 <v-checkbox-btn :model-value="isSelected" @update:model-value="select"></v-checkbox-btn>
+              </v-list-item-action>
+            </template>
+
+            <template v-slot:append>
+              <v-list-item-action start>
+                <v-btn icon="mdi-archive" @click="del(item.value)"></v-btn>
               </v-list-item-action>
             </template>
           </v-list-item>
